@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { useParams, useNavigate } from 'react-router-dom';
 import { updateTutorial, deleteTutorial } from "../slices/tutorials";
 import TutorialDataService from "../services/TutorialService";
 
 const Tutorial = (props) => {
+  const { id }= useParams();
+  let navigate = useNavigate();
+
   const initialTutorialState = {
     id: null,
     title: "",
@@ -26,8 +30,9 @@ const Tutorial = (props) => {
   };
 
   useEffect(() => {
-    getTutorial(props.match.params.id);
-  }, [props.match.params.id]);
+    if (id)
+      getTutorial(id);
+  }, [id]);
 
   const handleInputChange = event => {
     const { name, value } = event.target;
@@ -70,7 +75,7 @@ const Tutorial = (props) => {
     dispatch(deleteTutorial({ id: currentTutorial.id }))
       .unwrap()
       .then(() => {
-        props.history.push("/tutorials");
+        navigate("/tutorials");
       })
       .catch(e => {
         console.log(e);
